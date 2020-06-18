@@ -3,7 +3,7 @@
     <!-- 头部区域 -->
     <el-header>
       <div>
-        <img src="../assets/LOGO.png" alt />
+        <img src="../assets/logo.png" alt />
         <span>时间宝贝后台管理系统</span>
       </div>
       <div>
@@ -35,7 +35,6 @@
           <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
             <!-- 一级菜单模板区域 -->
             <template slot="title">
-              <i :class="iconsObj[item.id]"></i>
               <span>{{item}}</span>
             </template>
             <!-- 二级菜单 -->
@@ -76,13 +75,6 @@ export default {
         "电影管理",
         "轮播管理"
       ],
-      iconsObj: {
-        "125": "iconfont icon-user",
-        "103": "iconfont icon-tijikongjian",
-        "101": "iconfont icon-shangpin",
-        "102": "iconfont icon-danju",
-        "145": "iconfont icon-baobiao"
-      },
       // 是否折叠
       isCollapse: false,
       // 被激活的链接地址
