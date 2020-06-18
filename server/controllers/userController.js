@@ -1,20 +1,5 @@
 const dbConfig = require('../config/db');
 
-// 测试接口
-getUserTest = (req, res) => {
-  const sql = 'select * from users';
-  const sqlArr = [];
-  const callBack = (err, data) => {
-    if (err) {
-      console.log('连接错误');
-    } else {
-      res.send({
-        list: data,
-      });
-    }
-  };
-  dbConfig.sqlConnect(sql, sqlArr, callBack);
-};
 // 用户登录
 login = (req, res) => {
   const { username, password } = req.body;
@@ -27,17 +12,23 @@ login = (req, res) => {
   const sqlArr = [];
   const callBack = (err, data) => {
     if (err) {
-      console.log('连接错误');
+      res.send({
+        meta: {
+          status: 500,
+        },
+      });
     } else {
       if (data.length <= 0) {
         res.send({
-          status: '402',
-          msg: '登录失败',
+          meta: { status: 402 },
         });
       } else {
         res.send({
-          status: '200',
-          msg: '登录成功',
+          data,
+          meta: {
+            status: 200,
+            msg: '登录成功',
+          },
         });
       }
     }
@@ -71,13 +62,17 @@ reg = (req, res) => {
     } else {
       if (data.length <= 0) {
         res.send({
-          status: '402',
-          msg: '注册失败',
+          meta: {
+            status: 402,
+            msg: '注册失败',
+          },
         });
       } else {
         res.send({
-          status: '200',
-          msg: '注册成功',
+          meta: {
+            status: 201,
+            msg: '注册成功',
+          },
         });
       }
     }
@@ -85,4 +80,4 @@ reg = (req, res) => {
   dbConfig.sqlConnect(sql, sqlArr, callBack);
 };
 
-module.exports = { login, getUserTest, reg };
+module.exports = { login, reg };

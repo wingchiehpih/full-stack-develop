@@ -3,7 +3,6 @@ const swiper = express.Router();
 
 const swiperCon = require('../controllers/swiperController');
 
-swiper.get('/', swiperCon.getSwiper);
-swiper.get('/getAllSwiper', swiperCon.getAllSwiper);
+swiper.get('/', swiperCon.getAllSwiper);
 
 module.exports = swiper;
