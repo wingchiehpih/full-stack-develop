@@ -27,6 +27,36 @@ const routes = [
         name: 'welcome',
         component: () => import('@/components/Welcome'),
       },
+      {
+        path: '/adminList',
+        name: 'adminList',
+        component: () => import('@/components/AdminList'),
+      },
+      {
+        path: '/userList',
+        name: 'userList',
+        component: () => import('@/components/UserList'),
+      },
+      {
+        path: '/userCollect',
+        name: 'userCollect',
+        component: () => import('@/components/UserCollect'),
+      },
+      {
+        path: '/movieList',
+        name: 'movieList',
+        component: () => import('@/components/MovieList'),
+      },
+      {
+        path: '/movieControl',
+        name: 'movieControl',
+        component: () => import('@/components/MovieControl'),
+      },
+      {
+        path: '/swiperControl',
+        name: 'swiperControl',
+        component: () => import('@/components/SwiperControl'),
+      },
     ],
   },
 ];

@@ -34,35 +34,35 @@
 
 <script>
 export default {
-  name: 'login',
+  name: "login",
   data() {
     return {
       // 这是登录表单的数据绑定对象
       loginForm: {
-        username: 'admin',
-        password: '123456',
+        username: "admin",
+        password: "123456"
       },
       // 这是表单的验证规则对象\\
       loginFormRules: {
         username: [
-          { required: true, message: '请输入登录名称', trigger: 'blur' },
+          { required: true, message: "请输入登录名称", trigger: "blur" },
           {
             min: 3,
             max: 10,
-            message: '长度在 3 到 10 个字符',
-            trigger: 'blur',
-          },
+            message: "长度在 3 到 10 个字符",
+            trigger: "blur"
+          }
         ],
         password: [
-          { required: true, message: '请输入登录密码', trigger: 'blur' },
+          { required: true, message: "请输入登录密码", trigger: "blur" },
           {
             min: 6,
             max: 15,
-            message: '长度在 6 到 15 个字符',
-            trigger: 'blur',
-          },
-        ],
-      },
+            message: "长度在 6 到 15 个字符",
+            trigger: "blur"
+          }
+        ]
+      }
     };
   },
   methods: {
@@ -72,14 +72,14 @@ export default {
     },
     // 表单登录的预验证
     async login() {
-      const { data: res } = await this.$http.post('admin', this.loginForm);
+      const { data: res } = await this.$http.post("admin", this.loginForm);
       if (res.meta.status !== 200)
         // message全局弹框效果
-        return this.$message.error('登录失败');
-      this.$message.success('登录成功');
-      this.$router.push('/home');
-    },
-  },
+        return this.$message.error("登录失败");
+      this.$message.success("登录成功");
+      this.$router.push("/home");
+    }
+  }
 };
 </script>
 
@@ -126,6 +126,7 @@ export default {
       }
       input {
         background-color: transparent;
+        // transform: scale(1.2);
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <h1>欢迎光临时间宝贝管理界面</h1>
+  <h1>电影列表界面</h1>
 </template>
 
 <script>

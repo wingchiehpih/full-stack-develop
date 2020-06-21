@@ -18,35 +18,29 @@
       <el-aside :width="isCollapse?'64px':'200px'">
         <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!-- 侧边栏区域 -->
-        <!-- 加上冒号实现动态数据绑定，不加冒号会被认为为字符串 -->
         <!-- router开启路由模式 -->
         <el-menu
           background-color="#313743"
           text-color="#fff"
-          active-text-color="#2D65A8"
+          active-text-color="#359BFF"
           unique-opened
           :collapse="isCollapse"
           :collapse-transition="false"
           router
-          :default-active="activePath"
         >
           <!-- 一级菜单 -->
           <!-- 动态index绑定实现侧边栏分别展开效果 :实现数字转换为字符串 -->
-          <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
+          <el-submenu :index="item.id" v-for="item in menuList" :key="item.id">
             <!-- 一级菜单模板区域 -->
             <template slot="title">
-              <span>{{item}}</span>
+              <i :class="iconsObj[item.id]"></i>
+              <span>{{item.authName}}</span>
             </template>
             <!-- 二级菜单 -->
-            <!-- subItem.path实现地址格式化 -->
-            <el-menu-item
-              v-for="subItem in menuListItem"
-              :key="subItem.id"
-              @click="saveNavState('/'+subItem.path+'')"
-            >
+            <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.iid">
               <template slot="title">
                 <i class="el-icon-menu"></i>
-                <span>{{subItem}}</span>
+                <span>{{subItem.authName}}</span>
               </template>
             </el-menu-item>
           </el-submenu>
@@ -66,15 +60,61 @@ export default {
   data() {
     return {
       // 左侧菜单数据
-      menuList: ["管理员", "用户管理", "电影管理"],
-      menuListItem: [
-        "管理员登录",
-        "用户列表",
-        "用户收藏",
-        "电影列表",
-        "电影管理",
-        "轮播管理"
+      menuList: [
+        {
+          authName: "管理员",
+          id: "125",
+          children: [
+            {
+              iid: "1",
+              path: "/adminList",
+              authName: "管理员列表"
+            }
+          ]
+        },
+        {
+          authName: "用户管理",
+          id: "103",
+          children: [
+            {
+              iid: "2",
+              path: "/userList",
+              authName: "用户列表"
+            },
+            {
+              iid: "3",
+              path: "/userCollect",
+              authName: "用户收藏"
+            }
+          ]
+        },
+        {
+          authName: "电影管理",
+          id: "101",
+          children: [
+            {
+              iid: "4",
+              path: "movieList",
+              authName: "电影列表"
+            },
+            {
+              iid: "5",
+              path: "movieControl",
+              authName: "电影管理"
+            },
+            {
+              iid: "6",
+              path: "swiperControl",
+              authName: "轮播管理"
+            }
+          ]
+        }
       ],
+      iconsObj: {
+        "125": "iconfont icon-user",
+        "103": "iconfont icon-tijikongjian",
+        "101": "iconfont icon-shangpin"
+      },
       // 是否折叠
       isCollapse: false,
       // 被激活的链接地址
@@ -98,8 +138,7 @@ export default {
   background-color: #363d40;
   display: flex;
   justify-content: space-between;
-  padding: 0 10px;
-  align-items: center;
+  padding: 0 20px;
   color: #fff;
   font-size: 20px;
   > div {
@@ -110,7 +149,7 @@ export default {
       height: auto;
     }
     span {
-      margin-left: 15px;
+      margin-left: 10px;
     }
   }
 }
@@ -118,6 +157,7 @@ export default {
   background-color: #313743;
   // 去除左侧菜单栏右边框线
   .el-menu {
+    margin-top: 5px;
     border-right: none;
   }
 }
