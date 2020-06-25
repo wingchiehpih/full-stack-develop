@@ -45,7 +45,7 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <!-- 添加用户对话框 -->
+    <!-- 添加管理员对话框 -->
     <el-dialog title="添加管理员" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
       <!-- 内容主体区域 -->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
@@ -211,7 +211,7 @@ export default {
     addDialogClosed() {
       this.$refs.addFormRef.resetFields();
     },
-    // 点击按钮新增用户
+    // 点击按钮新增管理员
     addUser() {
       this.$refs.addFormRef.validate(async valid => {
         // console.log(valid);

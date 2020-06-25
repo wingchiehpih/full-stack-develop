@@ -1,10 +1,22 @@
 <template>
-  <h1>欢迎光临时间宝贝管理界面</h1>
+  <el-main />
 </template>
 
 <script>
-export default {};
+export default {
+  name: "welcome",
+  data() {
+    return {};
+  }
+};
 </script>
-
-<style>
+<style lang="less" scoped>
+.el-main {
+  margin: 0;
+  padding: 0 !important;
+  background: url("../assets/welcome.png") no-repeat;
+  background-size: cover;
+  width: auto;
+  height: 100%;
+}
 </style>

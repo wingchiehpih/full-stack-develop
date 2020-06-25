@@ -12,12 +12,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const adminRouter = require('./route/admin');
 const userRouter = require('./route/user');
-const swiperRouter = require('./route/swiper');
 const goodRouter = require('./route/good');
 
 app.use('/admin', adminRouter);
 app.use('/user', userRouter);
-app.use('/swiper', swiperRouter);
 app.use('/good', goodRouter);
 
 // 前面都不匹配，则路由错误。返回 404 页面，app.use不管发起get或post都进行匹配

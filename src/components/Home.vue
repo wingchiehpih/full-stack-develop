@@ -98,14 +98,9 @@ export default {
               authName: "电影列表"
             },
             {
-              iid: "5",
-              path: "movieControl",
-              authName: "电影管理"
-            },
-            {
               iid: "6",
               path: "swiperControl",
-              authName: "轮播管理"
+              authName: "电影发布"
             }
           ]
         }

@@ -1,5 +1,9 @@
 // 配置路由相关信息
 import VueRouter from 'vue-router';
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch((err) => err);
+};
 import Vue from 'vue';
 
 // 1、通过Vue.use(插件),安装插件
@@ -46,11 +50,6 @@ const routes = [
         path: '/movieList',
         name: 'movieList',
         component: () => import('@/components/MovieList'),
-      },
-      {
-        path: '/movieControl',
-        name: 'movieControl',
-        component: () => import('@/components/MovieControl'),
       },
       {
         path: '/swiperControl',
