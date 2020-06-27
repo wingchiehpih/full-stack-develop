@@ -109,12 +109,14 @@ collect = (req, res) => {
 };
 // 收藏列表
 collects = (req, res) => {
-  const { username, collect } = req.body;
+  const { username, collect, img } = req.body;
   const sql =
-    "insert into user_collects (username,collect) values('" +
+    "insert into user_collects (username,collect,img) values('" +
     username +
     "','" +
     collect +
+    "','" +
+    img +
     "')";
   const sqlArr = [username, collect];
   const callBack = (err, data) => {
@@ -156,6 +158,7 @@ unCollects = (req, res) => {
     } else {
       if (data.length <= 0) {
         return res.send({
+          data,
           meta: {
             status: 402,
             msg: '删除失败',
@@ -163,6 +166,7 @@ unCollects = (req, res) => {
         });
       } else {
         res.send({
+          data,
           meta: {
             status: 201,
             msg: '删除成功',

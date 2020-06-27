@@ -130,13 +130,14 @@ export default {
   },
   methods: {
     add() {
+      console.log(1);
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return this.$message.warning("前选择参数");
         // 数组转换为字符串
         this.addForm.type = this.addForm.type.join("/");
         this.addForm.language = this.addForm.language.join("/");
         const { data: res } = await this.$http.post(
-          "/good/post_newGood",
+          "/good/add_movie",
           this.addForm
         );
         if (res.meta.status !== 201) {

@@ -113,9 +113,9 @@ addAdmin = (req, res) => {
 };
 // 管理员修改信息
 editAdmin = (req, res) => {
-  const { id, password, email, phone } = req.body;
-  const sql = 'update roles set password = ' + password + '';
-  const sqlArr = [id, password, email, phone];
+  const { username, password, email, phone } = req.body;
+  const sql = `update roles set password = '${password}' ,  email='${email}' ,phone='${phone}' where username = '${username}'`;
+  const sqlArr = [username, password, email, phone];
   const callBack = (err, data) => {
     if (err) {
       console.log(err);
@@ -184,7 +184,6 @@ getAllUsersCollects = (req, res) => {
   const { query, pagenum, pagesize } = req.body;
   const all = (pagenum - 1) * pagesize;
   let sql = '';
-  console.log(query.length);
   if (query.length == 0) {
     sql = 'select * from user_collects limit ' + all + ',' + pagesize;
   } else {
@@ -402,15 +401,14 @@ deleteUser = (req, res) => {
 // 获取电影列表
 getAllGoods = (req, res) => {
   const { query, pagenum, pagesize } = req.body;
+  console.log(query);
   const all = (pagenum - 1) * pagesize;
   let sql = '';
   if (query.length == 0) {
     sql = 'select * from goods limit ' + all + ',' + pagesize;
   } else {
-    sql = `select * from goods where username like '${query}%'`;
+    sql = `select * from goods where name like '${query}%'`;
   }
-  sql = 'select * from goods limit ' + all + ',' + pagesize;
-
   const sqlArr = [query, pagenum, pagesize];
   const callBack = (err, data) => {
     if (err) {

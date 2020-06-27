@@ -20,7 +20,7 @@
         </el-col>
       </el-row>
       <el-table :data="userList" border stripe>
-        <el-table-column prop="id" label="id" width="50px" />
+        <el-table-column type="index" />
         <el-table-column prop="username" label="用户名" />
         <el-table-column prop="password" label="密码" />
         <el-table-column prop="sex" label="性别" />
@@ -32,7 +32,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
-              @click="showEditDialog(scope.row.id)"
+              @click="showEditDialog(scope.row.username)"
             ></el-button>
             <!-- 删除按钮 -->
             <el-button
@@ -78,6 +78,29 @@
         <el-button type="primary" @click="addUser">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 修改用户对话框 -->
+    <el-dialog
+      title="修改当前用户"
+      :visible.sync="editDialogVisible"
+      width="50%"
+      @close="editDialogClosed"
+    >
+      <el-form :model="editForm" ref="editFormRef" label-width="70px" :rules="editFormRules">
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="editForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-input v-model="editForm.sex"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="phone">
+          <el-input v-model="editForm.phone"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editUserInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -102,7 +125,20 @@ export default {
       // 添加用户验证对象
       addFormRules: {},
       userList: [],
-      total: 0
+      total: 0,
+      editDialogVisible: false,
+      // 修改用户数据
+      editForm: {
+        username: "",
+        password: "",
+        sex: "",
+        phone: ""
+      },
+      editFormRules: {
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        sex: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
+        phone: [{ required: true, message: "请输入手机", trigger: "blur" }]
+      }
     };
   },
   created() {
@@ -137,7 +173,11 @@ export default {
         this.getUserList();
       });
     },
-    showEditDialog() {},
+    showEditDialog(username) {
+      this.editForm.username = username;
+      console.log(this.editForm.username);
+      this.editDialogVisible = true;
+    },
     async removeUserById(id) {
       const confirmResult = await this.$confirm(
         "此操作将永久删除该用户, 是否继续?",
@@ -177,6 +217,31 @@ export default {
     // 监听用户关闭对话框事件
     addDialogClosed() {
       this.$refs.addFormRef.resetFields();
+    },
+    editDialogClosed() {
+      this.$refs.editFormRef.resetFields();
+    },
+    editUserInfo() {
+      this.$refs.editFormRef.validate(async valid => {
+        // console.log(valid);
+        if (!valid) return;
+        // 发起修改用户的请求
+        const { data: res } = await this.$http.post(
+          "admin/edit_user",
+          this.editForm
+        );
+        console.log(res);
+        if (res.meta.status !== 201) {
+          return this.$message.error("更新用户信息失败");
+        }
+        // 更新成功操作
+        // 1、关闭对话框
+        this.editDialogVisible = false;
+        // 2、刷新数据列表
+        this.getUserList();
+        // 3、提示修改成功
+        this.$message.success("更新用户信息成功");
+      });
     }
   }
 };

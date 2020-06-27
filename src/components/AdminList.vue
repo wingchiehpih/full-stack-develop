@@ -20,7 +20,7 @@
         </el-col>
       </el-row>
       <el-table :data="userList" border stripe>
-        <el-table-column prop="id" label="id" width="50px" />
+        <el-table-column type="index" />
         <el-table-column prop="username" label="用户名" />
         <el-table-column prop="password" label="密码" />
         <el-table-column prop="email" label="邮箱" />
@@ -32,7 +32,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
-              @click="showEditDialog(scope.row.id)"
+              @click="showEditDialog(scope.row.username)"
             ></el-button>
             <!-- 删除按钮 -->
             <el-button
@@ -69,11 +69,13 @@
       </span>
     </el-dialog>
     <!-- 修改用户对话框 -->
-    <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
+    <el-dialog
+      title="修改当前用户"
+      :visible.sync="editDialogVisible"
+      width="50%"
+      @close="editDialogClosed"
+    >
       <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
-        <el-form-item label="用户名">
-          <el-input v-model="editForm.username" disabled></el-input>
-        </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="editForm.password"></el-input>
         </el-form-item>
@@ -228,13 +230,37 @@ export default {
         this.getUserList();
       });
     },
-    showEditDialog() {
+    showEditDialog(username) {
+      this.editForm.username = username;
       this.editDialogVisible = true;
     },
     // 修改管理员框关闭事件
-    editDialogClosed() {},
+    editDialogClosed() {
+      this.$refs.editFormRef.resetFields();
+    },
     // 修改用户提交
-    editUserInfo() {},
+    editUserInfo() {
+      this.$refs.editFormRef.validate(async valid => {
+        // console.log(valid);
+        if (!valid) return;
+        // 发起修改用户的请求
+        const { data: res } = await this.$http.post(
+          "admin/edit_admin",
+          this.editForm
+        );
+        console.log(res);
+        if (res.meta.status !== 201) {
+          return this.$message.error("更新用户信息失败");
+        }
+        // 更新成功操作
+        // 1、关闭对话框
+        this.editDialogVisible = false;
+        // 2、刷新数据列表
+        this.getUserList();
+        // 3、提示修改成功
+        this.$message.success("更新用户信息成功");
+      });
+    },
     // 删除用户
     async removeUserById(id) {
       const confirmResult = await this.$confirm(

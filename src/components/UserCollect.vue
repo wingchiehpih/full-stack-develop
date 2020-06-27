@@ -44,7 +44,7 @@ export default {
         query: "",
         // 当前页数
         pagenum: 1,
-        pagesize: 2
+        pagesize: 5
       },
       userList: [],
       total: 0

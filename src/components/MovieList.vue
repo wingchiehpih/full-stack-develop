@@ -18,7 +18,7 @@
       </el-row>
       <!-- 表格栏区域 -->
       <el-table :data="userList" border stripe>
-        <el-table-column prop="id" label="id" width="50px" />
+        <el-table-column type="index" />
         <el-table-column prop="name" label="电影名" />
         <el-table-column prop="language" label="电影语言" />
         <el-table-column prop="direct" label="导演" />
@@ -31,7 +31,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
-              @click="showEditDialog(scope.row.id)"
+              @click="showEditDialog(scope.row.name)"
             ></el-button>
             <!-- 删除按钮 -->
             <el-button
@@ -41,7 +41,14 @@
               @click="removeUserById(scope.row.id)"
             ></el-button>
             <!-- 查看按钮 -->
-            <el-button type="info" icon="el-icon-document" size="mini"></el-button>
+            <el-tooltip class="item" effect="dark" content="查看简介" placement="top">
+              <el-button
+                type="info"
+                icon="el-icon-document"
+                size="mini"
+                @click="showSummaryDialog()"
+              ></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -55,6 +62,58 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
+      <!-- 修改区域 -->
+      <el-dialog
+        title="修改当前电影信息"
+        :visible.sync="editDialogVisible"
+        width="50%"
+        @close="editDialogClosed"
+      >
+        <el-form :model="editForm" ref="editFormRef" label-width="70px">
+          <el-form-item label="电影语言" prop="language">
+            <el-checkbox-group v-model="editForm.language">
+              <el-checkbox label="汉语" name="language"></el-checkbox>
+              <el-checkbox label="英语" name="language"></el-checkbox>
+              <el-checkbox label="粤语" name="language"></el-checkbox>
+              <el-checkbox label="日语" name="language"></el-checkbox>
+              <el-checkbox label="韩语" name="language"></el-checkbox>
+              <el-checkbox label="其他" name="language"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="导演" prop="direct">
+            <el-input v-model="editForm.direct"></el-input>
+          </el-form-item>
+          <el-form-item label="类型" prop="type">
+            <el-checkbox-group v-model="editForm.type">
+              <el-checkbox label="剧情" name="type"></el-checkbox>
+              <el-checkbox label="喜剧" name="type"></el-checkbox>
+              <el-checkbox label="动画" name="type"></el-checkbox>
+              <el-checkbox label="冒险" name="type"></el-checkbox>
+              <el-checkbox label="动作" name="type"></el-checkbox>
+              <el-checkbox label="科幻" name="type"></el-checkbox>
+              <el-checkbox label="历史" name="type"></el-checkbox>
+              <el-checkbox label="战争" name="type"></el-checkbox>
+              <el-checkbox label="爱情" name="type"></el-checkbox>
+              <el-checkbox label="灾难" name="type"></el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="评分" prop="score">
+            <el-input v-model="editForm.score"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="editDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="editMovieInfo">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 简介 -->
+      <el-dialog title="电影简介" :visible.sync="dialogVisible" width="50%">
+        <span>这是一段信息</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -70,7 +129,17 @@ export default {
         pagesize: 5
       },
       userList: [],
-      total: 0
+      total: 0,
+      movieName: "",
+      dialogVisible: false,
+      editDialogVisible: false,
+      editForm: {
+        name: "",
+        language: [],
+        direct: "",
+        type: [],
+        score: ""
+      }
     };
   },
   created() {
@@ -89,7 +158,32 @@ export default {
       this.total = total.data[0].count;
       console.log(this.userList);
     },
-    showEditDialog() {},
+    showEditDialog(name) {
+      this.editDialogVisible = true;
+      this.editForm.name = name;
+    },
+    async editMovieInfo() {
+      this.editForm.type = this.editForm.type.join("/");
+      this.editForm.language = this.editForm.language.join("/");
+      const { data: res } = await this.$http.post(
+        "good/edit_movie",
+        this.editForm
+      );
+      if (res.meta.status !== 201) {
+        return this.$message.error("修改电影信息失败");
+      }
+      // 更新成功操作
+      // 1、关闭对话框
+      this.editDialogVisible = false;
+      // 2、刷新数据列表
+      this.getUserList();
+      // 3、提示修改成功
+      this.$message.success("修改电影信息成功");
+    },
+    // 修改管理员框关闭事件
+    editDialogClosed() {
+      this.$refs.editFormRef.resetFields();
+    },
     removeUserById() {},
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize;
@@ -99,6 +193,19 @@ export default {
     handleCurrentChange(newPage) {
       this.queryInfo.pagenum = newPage;
       this.getUserList();
+    },
+    selectName(name) {
+      this.movieName = name;
+      console.log(this.movieName);
+    },
+    async showSummaryDialog() {
+      // console.log(name);
+      // console.log(this.movieName);
+      const { data: res } = await this.$http.post(
+        "/good/get_movieSummary",
+        this.movieName
+      );
+      console.log(res);
     }
   }
 };
